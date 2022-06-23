@@ -19,47 +19,75 @@ public class SignUpActivity extends AppCompatActivity {
     EditText passwordEt;
     AppCompatButton button;
     TextView loginTw;
+    String firstName;
+    String lastName;
+    String password;
+    String email;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         initDatas();
+
+        loginTw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String firstName = firstNameEt.getText().toString();
-                String lastName = lastNameEt.getText().toString();
-                String password = passwordEt.getText().toString();
-                String email = emailEt.getText().toString();
-                if (firstName.isEmpty()){
-                    Toast.makeText(SignUpActivity.this, "Input first name", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (lastName.isEmpty()){
-                    Toast.makeText(SignUpActivity.this, "Input last name", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (email.isEmpty()){
-                    Toast.makeText(SignUpActivity.this, "Input email", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (password.isEmpty()){
-                    Toast.makeText(SignUpActivity.this, "Input password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                SharedPreferences sp = getSharedPreferences("User", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("firstName", firstName);
-                editor.putString("email",email);
-                editor.putString("lastName",lastName);
-                editor.putString("password",password);
-                editor.apply();
 
-                Intent intent = new Intent(SignUpActivity.this,ExampleActivity.class);
-                startActivity(intent);
+                if (validation()) {
+                    SharedPreferences sp = getSharedPreferences("User", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("firstName", firstName);
+                    editor.putString("email",email);
+                    editor.putString("lastName",lastName);
+                    editor.putString("password",password);
+                    editor.apply();
+                    openExampleActivity();
+                }
+
             }
         });
     }
+
+    private Boolean validation(){
+        firstName = firstNameEt.getText().toString();
+        lastName = lastNameEt.getText().toString();
+        password = passwordEt.getText().toString();
+        email= emailEt.getText().toString();
+
+        if (firstName.isEmpty()){
+            Toast.makeText(SignUpActivity.this, "Input first name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (lastName.isEmpty()){
+            Toast.makeText(SignUpActivity.this, "Input last name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (email.isEmpty()){
+            Toast.makeText(SignUpActivity.this, "Input email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (password.isEmpty()){
+            Toast.makeText(SignUpActivity.this, "Input password", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    private void openExampleActivity(){
+        Intent intent = new Intent(SignUpActivity.this,ExampleActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void initDatas(){
         firstNameEt = findViewById(R.id.firstNameEt);
         lastNameEt = findViewById(R.id.lastNameEt);
